@@ -241,6 +241,7 @@ switch_output_mode = {
     "dot": intermediary_to_dot,
     "puml":intermediary_to_puml,
     "uml":intermediary_to_puml,
+    "pu":intermediary_to_puml,
 }
 
 
