@@ -236,6 +236,7 @@ switch_output_mode_auto = {
     "graph": intermediary_to_schema,
     "dot": intermediary_to_dot,
     "puml": intermediary_to_puml,
+    "pu": intermediary_to_puml,
 }
 
 # Routes from the file extension to the method to transform
@@ -246,6 +247,7 @@ switch_output_mode = {
     "dot": intermediary_to_dot,
     "puml": intermediary_to_puml,
     "uml": intermediary_to_puml,
+    "pu": intermediary_to_puml,
 }
 
 
