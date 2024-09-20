@@ -41,6 +41,7 @@ class Drawable(ABC):
     def __str__(self) -> str:
         return self.to_markdown()
 
+
 def sanitize_mermaid(text: str, *, is_er: bool = False):
     RE = re.compile("[^0-9a-zA-Z_-]+")
     """Mermaid does not allow special characters in column names"""
@@ -138,6 +139,7 @@ class Column(Drawable):
             " NOT NULL" if not self.is_null else "",
             "\n--" if self.key_symbol else "",
         )
+
 
 class Relation(Drawable):
     """Represents a Relation in the intermediaty syntax"""
