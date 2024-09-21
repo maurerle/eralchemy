@@ -29,13 +29,13 @@ except PackageNotFoundError:
 
 try:
     import plantuml
-    
+
     __has_plantuml = True
-    
+
 except ModuleNotFoundError as m:
     print(m)
     __has_plantuml = False
-    
+
 except ImportError as m:
     print(m)
     __has_plantuml = False
@@ -71,37 +71,37 @@ def get_argparser() -> argparse.ArgumentParser:
     parser.add_argument("--title", nargs="?", help="Add a title to the output graph")
     parser.add_argument(
         "-m",
-        nargs = "?",
-        help = "Output mode to write format {!s:s}, default: auto,".format(
-            list(switch_output_mode_auto.keys())
+        nargs="?",
+        help="Output mode to write format {!s:s}, default: auto,".format(
+            list(switch_output_mode_auto.keys()),
         ),
     )
     parser.add_argument(
         "--exclude-tables",
         "-x",
-        nargs = "+",
-        help = "Name of tables not to be displayed.",
+        nargs="+",
+        help="Name of tables not to be displayed.",
     )
     parser.add_argument(
         "--exclude-columns",
-        nargs = "+",
-        help = "Name of columns not to be displayed (for all tables).",
+        nargs="+",
+        help="Name of columns not to be displayed (for all tables).",
     )
     parser.add_argument(
         "--include-tables",
-        nargs = "+",
-        help = "Name of tables to be displayed alone.",
+        nargs="+",
+        help="Name of tables to be displayed alone.",
     )
     parser.add_argument(
         "--include-columns",
-        nargs = "+",
-        help = "Name of columns to be displayed alone (for all tables).",
+        nargs="+",
+        help="Name of columns to be displayed alone (for all tables).",
     )
-    parser.add_argument("-v", help= "Prints version number.", action="store_true")
+    parser.add_argument("-v", help="Prints version number.", action="store_true")
     return parser
 
 
-def intermediary_to_markdown(tables, relationships, output, title= ""):
+def intermediary_to_markdown(tables, relationships, output, title=""):
     """Saves the intermediary representation to markdown."""
     er_markup = _intermediary_to_markdown(tables, relationships)
     if title:
@@ -112,7 +112,7 @@ def intermediary_to_markdown(tables, relationships, output, title= ""):
         file_out.write(er_markup_with_config)
 
 
-def intermediary_to_mermaid(tables, relationships, output, title= ""):
+def intermediary_to_mermaid(tables, relationships, output, title=""):
     """Saves the intermediary representation to markdown."""
     markup = _intermediary_to_mermaid(tables, relationships)
     if title:
@@ -128,7 +128,7 @@ title: {title}
         file_out.write(md_markup)
 
 
-def intermediary_to_mermaid_er(tables, relationships, output, title= ""):
+def intermediary_to_mermaid_er(tables, relationships, output, title=""):
     """Saves the intermediary representation to markdown."""
     markup = _intermediary_to_mermaid_er(tables, relationships)
     if title:
