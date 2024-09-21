@@ -28,15 +28,18 @@ except PackageNotFoundError:
     __version__ = "na"
 
 try:
-    import plantuml
-    
+    import plantuml  # type: ignore
+
     __has_plantuml = True
+
 except ModuleNotFoundError as m:
     print(m)
     __has_plantuml = False
+
 except ImportError as m:
     print(m)
-    __has_plantuml=False
+    __has_plantuml = False
+
 
 def cli() -> None:
     """Entry point for the application script"""
@@ -69,7 +72,7 @@ def get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-m",
         nargs="?",
-        help="Output mode to write format, default: auto",
+        help=f"Output mode to write format {list(switch_output_mode_auto.keys())!s:s}, default: auto,",
     )
     parser.add_argument(
         "--exclude-tables",
@@ -164,7 +167,9 @@ def intermediary_to_puml(tables, relationships, output, title=""):
         markup_encoded = plantuml.deflate_and_encode(puml_markup)
         puml_markup += (
             f"\nfooter [[https://www.plantuml.com/plantuml/svg/{markup_encoded}"
-            "{link to PlantUML server} Link to PlantUML server]]")
+            "{link to PlantUML server} Link to PlantUML server]]"
+        )
+
     puml_markup = f"@startuml\n{puml_markup}\n@enduml"
     with open(output, "w") as file_out:
         file_out.write(puml_markup)
@@ -192,9 +197,7 @@ def _intermediary_to_mermaid_er(tables, relationships):
 
 
 def _intermediary_to_dot(tables, relationships, title=""):
-    """
-    Returns the dot source representing the database in a string.
-    """
+    """Returns the dot source representing the database in a string."""
     t = "\n".join(t.to_dot() for t in tables)
     r = "\n".join(r.to_dot() for r in relationships)
 

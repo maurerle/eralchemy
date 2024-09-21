@@ -29,6 +29,7 @@ class Drawable(ABC):
 
     def to_puml(self) -> str:
         """Transforms the intermediary object to it's syntax in the PlantUML format."""
+        raise NotImplementedError()
 
     def __eq__(self, other) -> bool:
         return self.__dict__ == other.__dict__
@@ -137,7 +138,7 @@ class Column(Drawable):
             self.name,
             self.type.replace("(", "<").replace(")", ">"),
             " NOT NULL" if not self.is_null else "",
-            "\n--" if self.key_symbol else ""
+            "\n--" if self.is_key else "",
         )
 
 
@@ -234,12 +235,27 @@ class Relation(Drawable):
         )
 
     def to_puml(self) -> str:
-        __puml_left_cardinalities = {"*": "}o", "?": "|o", "+": "}1", "1": "||", "": None}
-        __puml_right_cardinalities = {"*": "o{", "?": "o|", "+": "1{", "1": "||", "": None}
+        __puml_left_cardinalities = {
+            "*": "}o",
+            "?": "|o",
+            "+": "}1",
+            "1": "||",
+            "": None,
+        }
+        __puml_right_cardinalities = {
+            "*": "o{",
+            "?": "o|",
+            "+": "1{",
+            "1": "||",
+            "": None,
+        }
 
-        return (f"{self.left_col} "
-                f" {__puml_left_cardinalities[self.left_cardinality]}--{__puml_right_cardinalities[self.right_cardinality]} "
-                f"{self.right_col}")
+        return (
+            f"{self.left_col}"
+            f" {__puml_left_cardinalities[self.left_cardinality]}"
+            f"--{__puml_right_cardinalities[self.right_cardinality]}"
+            f" {self.right_col}"
+        )
 
     def __eq__(self, other: object) -> bool:
         if super().__eq__(other):
