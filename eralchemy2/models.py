@@ -29,6 +29,7 @@ class Drawable(ABC):
 
     def to_puml(self) -> str:
         """Transforms the intermediary object to it's syntax in the PlantUML format."""
+        raise NotImplementedError()
 
     def __eq__(self, other) -> bool:
         return self.__dict__ == other.__dict__
@@ -63,13 +64,13 @@ class Column(Drawable):
     @staticmethod
     def make_from_match(match: re.Match) -> Column:
         return Column(
-            name=match.group("name"),
-            type=match.group("label"),
-            is_key="*" in match.group("primary"),
-            is_null="*" not in match.group("primary"),
+            name= match.group("name"),
+            type= match.group("label"),
+            is_key= "*" in match.group("primary"),
+            is_null= "*" not in match.group("primary"),
         )
 
-    def __init__(self, name: str, type=None, is_key: bool = False, is_null=None):
+    def __init__(self, name: str, type= None, is_key: bool = False, is_null= None):
         """
         :param name: (str) Name of the column
         :param type:
@@ -120,15 +121,15 @@ class Column(Drawable):
             "{key_opening}{col_name}{key_closing} {type}{null}",
         )
         return base.format(
-            key_opening="<u>" if self.is_key else "",
-            key_closing="</u>" if self.is_key else "",
-            col_name=FONT_TAGS.format(self.name),
-            type=(
+            key_opening= "<u>" if self.is_key else "",
+            key_closing= "</u>" if self.is_key else "",
+            col_name= FONT_TAGS.format(self.name),
+            type= (
                 FONT_TAGS.format(" [{}]").format(self.type)
                 if self.type is not None
                 else ""
             ),
-            null=" NOT NULL" if not self.is_null else "",
+            null= " NOT NULL" if not self.is_null else "",
         )
 
     def to_puml(self) -> str:
@@ -137,7 +138,7 @@ class Column(Drawable):
             self.name,
             self.type.replace("(", "<").replace(")", ">"),
             " NOT NULL" if not self.is_null else "",
-            "\n--" if self.key_symbol else "",
+            "\n--" if self.is_key else "",
         )
 
 
@@ -162,18 +163,18 @@ class Relation(Drawable):
     @staticmethod
     def make_from_match(match: re.Match) -> Relation:
         return Relation(
-            right_col=match.group("right_name"),
-            left_col=match.group("left_name"),
-            right_cardinality=match.group("right_cardinality"),
-            left_cardinality=match.group("left_cardinality"),
+            right_col= match.group("right_name"),
+            left_col= match.group("left_name"),
+            right_cardinality= match.group("right_cardinality"),
+            left_cardinality= match.group("left_cardinality"),
         )
 
     def __init__(
         self,
         right_col,
         left_col,
-        right_cardinality=None,
-        left_cardinality=None,
+        right_cardinality= None,
+        left_cardinality= None,
     ):
         if (
             right_cardinality not in self.cardinalities.keys()
@@ -234,12 +235,27 @@ class Relation(Drawable):
         )
 
     def to_puml(self) -> str:
-        __puml_left_cardinalities = {"*": "}o", "?": "|o", "+": "}1", "1": "||", "": None}
-        __puml_right_cardinalities = {"*": "o{", "?": "o|", "+": "1{", "1": "||", "": None}
+        __puml_left_cardinalities = {
+            "*": "}o",
+            "?": "|o",
+            "+": "}1",
+            "1": "||",
+            "": None,
+        }
+        __puml_right_cardinalities = {
+            "*": "o{",
+            "?": "o|",
+            "+": "1{",
+            "1": "||",
+            "": None,
+        }
 
-        return (f"{self.left_col} "
-                f" {__puml_left_cardinalities[self.left_cardinality]}--{__puml_right_cardinalities[self.right_cardinality]} "
-                f"{self.right_col}")
+        return (
+            f"{self.left_col}"
+            f" {__puml_left_cardinalities[self.left_cardinality]}"
+            f"--{__puml_right_cardinalities[self.right_cardinality]}"
+            f" {self.right_col}"
+        )
 
     def __eq__(self, other: object) -> bool:
         if super().__eq__(other):
@@ -247,10 +263,10 @@ class Relation(Drawable):
         if not isinstance(other, Relation):
             return False
         other_inversed = Relation(
-            right_col=other.left_col,
-            left_col=other.right_col,
-            right_cardinality=other.left_cardinality,
-            left_cardinality=other.right_cardinality,
+            right_col= other.left_col,
+            left_col= other.right_col,
+            right_cardinality= other.left_cardinality,
+            left_cardinality= other.right_cardinality,
         )
         return other_inversed.__dict__ == self.__dict__
 
@@ -266,7 +282,7 @@ class Table(Drawable):
 
     @staticmethod
     def make_from_match(match: re.Match) -> Table:
-        return Table(name=match.group("name"), columns=[])
+        return Table(name= match.group("name"), columns=[])
 
     @property
     def header_markdown(self) -> str:
@@ -286,12 +302,12 @@ class Table(Drawable):
 
     def to_mermaid_er(self) -> str:
         columns = [c.to_mermaid_er() for c in self.columns]
-        name = sanitize_mermaid(self.name, is_er=True)
+        name = sanitize_mermaid(self.name, is_er= True)
         return f"{name} {{\n" + "\n  ".join(columns) + "\n}"
 
     @property
     def columns_sorted(self):
-        return sorted(self.columns, key=operator.attrgetter("name"))
+        return sorted(self.columns, key= operator.attrgetter("name"))
 
     @property
     def header_dot(self) -> str:
