@@ -28,7 +28,7 @@ except PackageNotFoundError:
     __version__ = "na"
 
 try:
-    import plantuml
+    import plantuml # type: ignore
 
     __has_plantuml = True
 
