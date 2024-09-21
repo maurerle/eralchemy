@@ -72,9 +72,7 @@ def get_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-m",
         nargs="?",
-        help="Output mode to write format {!s:s}, default: auto,".format(
-            list(switch_output_mode_auto.keys()),
-        ),
+        help=f"Output mode to write format {list(switch_output_mode_auto.keys())!s:s}, default: auto,",
     )
     parser.add_argument(
         "--exclude-tables",
